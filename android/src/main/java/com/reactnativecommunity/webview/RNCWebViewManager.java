@@ -907,11 +907,10 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
         // This is desired behavior. We later use these values to determine whether the request is a top-level navigation or a subresource request.
         String topWindowUrl = webView.getUrl();
         String failingUrl = error.getUrl();
+        int code = error.getPrimaryError();
 
-        // Cancel request after obtaining top-level URL.
-        // If request is cancelled before obtaining top-level URL, undesired behavior may occur.
-        // Undesired behavior: Return value of WebView.getUrl() may be the current URL instead of the failing URL.
-        handler.cancel();
+        // Throw to default implementation because Google Play notices that the application contains security vulnerabilities
+        super.onReceivedSslError(webView, handler, error);
 
         if (!topWindowUrl.equalsIgnoreCase(failingUrl)) {
           // If error is not due to top-level navigation, then do not call onReceivedError()
@@ -919,7 +918,6 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           return;
         }
 
-        int code = error.getPrimaryError();
         String description = "";
         String descriptionPrefix = "SSL error: ";
 
